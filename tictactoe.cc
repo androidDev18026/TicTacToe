@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <utility>
 
 enum Move
 {
@@ -68,9 +69,9 @@ public:
     ~Player() { printf("Deleted Player [%s]\n", name.c_str()); }
 
     const char& GetColor() const { return color; }
-    void SetColor(const char &c) { color = c; }
+    void SetColor(const char& c) { color = c; }
 
-    bool operator==(const Player &other) { return other.color == this->color; }
+    bool operator==(const Player& other) { return other.color == this->color; }
 
     void MakeMove() const
     {
@@ -114,8 +115,8 @@ struct TicTacToe
 
     bool GameOver() const
     {
-        Board &b = Board::GetBoard();
-        const char &P1C = p1->GetColor();
+        Board& b = Board::GetBoard();
+        const char& P1C = p1->GetColor();
 
         if (((b.GetSlot(0) == Move::CROSS) && (b.GetSlot(1) == Move::CROSS) && (b.GetSlot(2) == Move::CROSS)) ||
             ((b.GetSlot(3) == Move::CROSS) && (b.GetSlot(4) == Move::CROSS) && (b.GetSlot(5) == Move::CROSS)) ||
