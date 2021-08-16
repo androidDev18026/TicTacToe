@@ -50,7 +50,7 @@ public:
         return false;
     }
 
-    const char &GetSlot(unsigned idx) const { return slots[idx]; }
+    const char& GetSlot(unsigned idx) const { return slots[idx]; }
 };
 
 class Player
