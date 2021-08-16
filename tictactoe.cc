@@ -67,7 +67,7 @@ public:
 
     ~Player() { printf("Deleted Player [%s]\n", name.c_str()); }
 
-    const char &GetColor() const { return color; }
+    const char& GetColor() const { return color; }
     void SetColor(const char &c) { color = c; }
 
     bool operator==(const Player &other) { return other.color == this->color; }
