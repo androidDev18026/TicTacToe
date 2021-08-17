@@ -86,7 +86,7 @@ public:
         {
             ss >> row >> col;
             printf("%d %d\n", row,col);                                    
-            bool move = Board::GetBoard().SetSlot((row - 1) * 2 + (col - 1), color);
+            bool move = Board::GetBoard().SetSlot((row - 1) * 3 + (col - 1), color);
 
             if (move)
             {
