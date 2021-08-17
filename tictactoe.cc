@@ -1,7 +1,4 @@
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <utility>
+#include <bits/stdc++.h>
 
 enum Move
 {
@@ -28,14 +25,14 @@ public:
 
     constexpr void Draw() const
     {
-        const char *pattern = "\
-+---+---+---+\n\
-+ %c | %c | %c +\n\
-+---+---+---+\n\
-+ %c | %c | %c +\n\
-+---+---+---+\n\
-+ %c | %c | %c +\n\
-+---+---+---+\n";
+        const char *pattern = "\n\
+\t+---+---+---+\n\
+\t+ %c | %c | %c +\n\
+\t+---+---+---+\n\
+\t+ %c | %c | %c +\n\
+\t+---+---+---+\n\
+\t+ %c | %c | %c +\n\
+\t+---+---+---+\n";
 
         printf(pattern, slots[0], slots[1], slots[2], slots[3], slots[4], slots[5],
                slots[6], slots[7], slots[8]);
@@ -72,32 +69,42 @@ public:
     void SetColor(const char &c) { color = c; }
 
     bool operator==(const Player &other) { return other.color == this->color; }
+	
+	void ThrowMoveException(const char* const msg = "") const
+	{
+		std::cout << '\n' << msg << std::endl;
+		std::cin.clear();		
+		MakeMove();
+	}
 
     void MakeMove() const
     {
-        int row, col;
-        
+        char rowc, colc;
+
         printf("\n[%s (%c)] Enter move: ", name.c_str(), color);
+
         std::string line;
-        std::getline(std::cin,line);
-        std::stringstream ss(line);
+		std::getline(std::cin,line);		
+		std::stringstream ss(line);
                     
         if (ss.good())
         {
-            ss >> row >> col;
-            printf("%d %d\n", row,col);                                    
-            bool move = Board::GetBoard().SetSlot((row - 1) * 3 + (col - 1), color);
-
-            if (move)
-            {
-                // printf("[%s] Added %c to Board\n",name.c_str(),color);
-                Board::GetBoard().Draw();
-            }
-            else
-            {
-                std::cout << "Invalid Move!" << std::endl;
-                MakeMove();
-            }
+            ss >> rowc >> colc;
+			if (isdigit(rowc) && isdigit(colc))            
+			{	
+				int row = rowc - '0' - 1;
+				int col = colc - '0' - 1;
+				
+				if (row <= 2 && col <= 2)
+				{		
+					bool move = Board::GetBoard().SetSlot(row * 3 + col, color);		
+				    if (move) 
+						Board::GetBoard().Draw();
+				    else ThrowMoveException("Move not available, pick another slot");
+				}
+				else ThrowMoveException("Row or Column values are > 3"); 			
+			}   
+			else ThrowMoveException("Invalid Input - must be digits!");
         }
     }
 };
