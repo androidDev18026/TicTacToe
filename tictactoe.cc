@@ -41,7 +41,7 @@ public:
                slots[6], slots[7], slots[8]);
     }
 
-    bool SetSlot(const unsigned index, char move)
+    bool SetSlot(const int index, const char move)
     {
         if (index < 9 && slots[index] == Move::EMPTY && (move == Move::CROSS || move == Move::CIRCLE))
         {
@@ -51,7 +51,7 @@ public:
         return false;
     }
 
-    const char& GetSlot(unsigned idx) const { return slots[idx]; }
+    const char &GetSlot(const int idx) const { return slots[idx]; }
 };
 
 class Player
@@ -68,24 +68,26 @@ public:
 
     ~Player() { printf("Deleted Player [%s]\n", name.c_str()); }
 
-    const char& GetColor() const { return color; }
-    void SetColor(const char& c) { color = c; }
+    const char &GetColor() const { return color; }
+    void SetColor(const char &c) { color = c; }
 
-    bool operator==(const Player& other) { return other.color == this->color; }
+    bool operator==(const Player &other) { return other.color == this->color; }
 
     void MakeMove() const
     {
-        unsigned row, col;
+        int row, col;
+        
         printf("\n[%s (%c)] Enter move: ", name.c_str(), color);
         std::string line;
-        std::getline(std::cin, line);
+        std::getline(std::cin,line);
         std::stringstream ss(line);
-        
+                    
         if (ss.good())
         {
             ss >> row >> col;
+            printf("%d %d\n", row,col);                                    
+            bool move = Board::GetBoard().SetSlot((row - 1) * 2 + (col - 1), color);
 
-            bool move = Board::GetBoard().SetSlot((row - 1) * 3 + (col - 1), color);
             if (move)
             {
                 // printf("[%s] Added %c to Board\n",name.c_str(),color);
@@ -115,8 +117,8 @@ struct TicTacToe
 
     bool GameOver() const
     {
-        Board& b = Board::GetBoard();
-        const char& P1C = p1->GetColor();
+        Board &b = Board::GetBoard();
+        const char &P1C = p1->GetColor();
 
         if (((b.GetSlot(0) == Move::CROSS) && (b.GetSlot(1) == Move::CROSS) && (b.GetSlot(2) == Move::CROSS)) ||
             ((b.GetSlot(3) == Move::CROSS) && (b.GetSlot(4) == Move::CROSS) && (b.GetSlot(5) == Move::CROSS)) ||
@@ -147,7 +149,7 @@ struct TicTacToe
 
         for (unsigned i = 0; i < 9; ++i)
         {
-            if (b.GetSlot(i) == static_cast<char>(Move::EMPTY))
+            if (b.GetSlot(i) == Move::EMPTY)
                 return false;
         }
 
@@ -163,7 +165,7 @@ struct TicTacToe
 
         if (dis(gen) > 0.5f)
         {
-            puts("Player 1 is first!");
+            std::cout << "Player 1 is first!" << std::endl;
             while (!GameOver())
             {
                 p1->MakeMove();
@@ -176,7 +178,7 @@ struct TicTacToe
         }
         else
         {
-            puts("Player 2 is first!");
+            std::cout << "Player 2 is first!" << std::endl;
             while (!GameOver())
             {
                 p2->MakeMove();
@@ -194,15 +196,18 @@ static std::pair<std::string,char> PreparePlayer()
 {
     std::string name;
     char c;
-    
-    printf("Enter Name: ");
+        
+    std::cout << "Enter Name: ";
     std::cin >> name;
-    do 
-    {
+    
+    do
+    {  
         std::cout << "Enter symbol: ";
         std::cin >> c;
-    } while (c != Move::CIRCLE && c != Move::CROSS);
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         
+    } while (c != Move::CIRCLE && c != Move::CROSS);
+       
     return std::make_pair(name,c);
 }
  
@@ -222,8 +227,8 @@ int main()
     auto[name1, c1] = p1Info;
     auto[name2, c2] = p2Info;
     
-    Player p1(name1, c1);
-    Player p2(name2, c2);
+    Player p1(name1,c1);
+    Player p2(name2,c2);
     #endif
     
     if (p1 == p2)
