@@ -1,7 +1,7 @@
 #include <iostream>
-#include <string>
 #include <sstream>
 #include <utility>
+#include <string>
 
 enum Move
 {
@@ -72,13 +72,14 @@ public:
     void SetColor(const char &c) { color = c; }
 
     bool operator==(const Player &other) { return other.color == this->color; }
-	
-	void ThrowMoveException(const char* const msg = "") const
-	{
-		std::cout << '\n' << msg << std::endl;
-		std::cin.clear();		
-		MakeMove();
-	}
+
+    void ThrowMoveException(const char *const msg = "") const
+    {
+        std::cout << '\n'
+                  << msg << std::endl;
+        std::cin.clear();
+        MakeMove();
+    }
 
     void MakeMove() const
     {
@@ -87,34 +88,37 @@ public:
         printf("\n[%s (%c)] Enter move: ", name.c_str(), color);
 
         std::string line;
-		std::getline(std::cin,line);		
-		std::stringstream ss(line);
-                    
+        std::getline(std::cin, line);
+        std::stringstream ss(line);
+
         if (ss.good())
         {
             ss >> rowc >> colc;
-			if (isdigit(rowc) && isdigit(colc))            
-			{	
-				int row = rowc - '0' - 1;
-				int col = colc - '0' - 1;
-				
-				if (row <= 2 && col <= 2)
-				{		
-					bool move = Board::GetBoard().SetSlot(row * 3 + col, color);		
-				    if (move) 
-						Board::GetBoard().Draw();
-				    else ThrowMoveException("Move not available, pick another slot");
-				}
-				else ThrowMoveException("Row or Column values are > 3"); 			
-			}   
-			else ThrowMoveException("Invalid Input - must be digits!");
+            if (isdigit(rowc) && isdigit(colc))
+            {
+                int row = rowc - '0' - 1;
+                int col = colc - '0' - 1;
+
+                if (row <= 2 && col <= 2)
+                {
+                    bool move = Board::GetBoard().SetSlot(row * 3 + col, color);
+                    if (move)
+                        Board::GetBoard().Draw();
+                    else
+                        ThrowMoveException("Move not available, pick another slot");
+                }
+                else
+                    ThrowMoveException("Row or Column values are > 3");
+            }
+            else
+                ThrowMoveException("Invalid Input - must be digits!");
         }
     }
 };
 
 struct TicTacToe
 {
-    Player* p1, *p2;
+    Player *p1, *p2;
     static short moves;
 
     TicTacToe(Player *player1, Player *player2)
@@ -202,45 +206,45 @@ struct TicTacToe
     }
 };
 
-static std::pair<std::string,char> PreparePlayer()
+static std::pair<std::string, char> PreparePlayer()
 {
     std::string name;
     char c;
-        
+
     std::cout << "Enter Name: ";
     std::cin >> name;
-    
+
     do
-    {  
+    {
         std::cout << "Enter symbol: ";
         std::cin >> c;
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        
+
     } while (c != Move::CIRCLE && c != Move::CROSS);
-       
-    return std::make_pair(name,c);
+
+    return std::make_pair(name, c);
 }
- 
+
 short TicTacToe::moves = 0;
 
 int main()
-{  
-    #ifdef _DEBUG
+{
+#ifdef _DEBUG
     Player p1("Mark", 'X');
     Player p2("Nick", 'O');
-    #else
+#else
     std::cout << "=========Player 1=========" << std::endl;
-    std::pair<std::string,char> p1Info = PreparePlayer();
+    std::pair<std::string, char> p1Info = PreparePlayer();
     std::cout << "=========Player 2=========" << std::endl;
-    std::pair<std::string,char> p2Info = PreparePlayer();
-    
-    auto[name1, c1] = p1Info;
-    auto[name2, c2] = p2Info;
-    
-    Player p1(name1,c1);
-    Player p2(name2,c2);
-    #endif
-    
+    std::pair<std::string, char> p2Info = PreparePlayer();
+
+    auto [name1, c1] = p1Info;
+    auto [name2, c2] = p2Info;
+
+    Player p1(name1, c1);
+    Player p2(name2, c2);
+#endif
+
     if (p1 == p2)
     {
         if (p1.GetColor() == Move::CIRCLE)
@@ -248,11 +252,11 @@ int main()
         else
             p2.SetColor(Move::CIRCLE);
     }
-    
+
     TicTacToe game(&p1, &p2);
-    
+
     game.GameLoop();
-    
+
     printf("\nNumber of moves: %u\n\n", TicTacToe::moves);
 
     return 0;
